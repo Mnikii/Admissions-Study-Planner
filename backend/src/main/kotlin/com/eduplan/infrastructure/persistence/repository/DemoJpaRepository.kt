@@ -33,4 +33,3 @@ interface DemoJpaRepository : JpaRepository<DemoJpaEntity, UUID> {
     @Query("SELECT d FROM DemoJpaEntity d WHERE d.demoPath LIKE %:pathPart%")
     fun findByDemoPathContaining(pathPart: String): List<DemoJpaEntity>
 }
-ому
