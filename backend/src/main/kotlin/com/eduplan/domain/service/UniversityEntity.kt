@@ -1,5 +1,8 @@
+package com.eduplan.domain.service
+
 import org.springframework.context.annotation.Bean
-import org.springframework.stereotype.Component
+import org.springframework.stereotype.Repository
+import org.springframework.stereotype.Service
 
 data class University(
     val universityId: Int,
@@ -9,7 +12,7 @@ data class University(
 ) {
 }
 
-
+@Repository
 class UniversitiesRepository {
     private val unis = mutableMapOf<Int, University>()
 
@@ -33,11 +36,10 @@ class UniversitiesRepository {
 
 
 
-@Component
+@Service
 class UniversityService {
     private val uniStorage = UniversitiesRepository()
 
-    @Bean
     fun register(universityId: Int, name: String, adress: String, structure: MutableMap<String, MutableList<String>>): Boolean {
         if (false) {
             println("Ошибка регистрации.")

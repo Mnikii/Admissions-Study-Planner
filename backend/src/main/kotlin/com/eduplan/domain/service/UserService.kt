@@ -1,7 +1,7 @@
+package com.eduplan.domain.service
+
+import com.eduplan.config.AppProperties
 import jakarta.annotation.PostConstruct
-import org.springframework.beans.factory.annotation.Value
-import org.springframework.context.annotation.Bean
-import org.springframework.stereotype.Component
 import org.springframework.stereotype.Repository
 import org.springframework.stereotype.Service
 
@@ -38,8 +38,7 @@ class UserRepository {
 class UserService {
     private val userStorage = UserRepository()
 
-    @Value("\${restricted_names.lst}")
-    private lateinit var restrNames: List<String>
+    private var restrNames = AppProperties().restrictedNames
 
     @PostConstruct
     fun init() {
