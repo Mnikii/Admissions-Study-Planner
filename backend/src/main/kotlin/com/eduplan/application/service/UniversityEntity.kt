@@ -1,7 +1,10 @@
-class University(
+import org.springframework.context.annotation.Bean
+import org.springframework.stereotype.Component
+
+data class University(
     val universityId: Int,
     var name: String,
-    val adress: String
+    val adress: String,
     val structure: MutableMap<String, MutableList<String>> // Key - faculty; Value - list of programmes on a faculty
 ) {
 }
@@ -22,7 +25,7 @@ class UniversitiesRepository {
         unis[new_uni.universityId] = new_uni
     }
 
-    fun get(universityId: Int): University {
+    fun get(universityId: Int): University? {
         return unis[universityId]
     }
 }
@@ -40,12 +43,11 @@ class UniversityService {
             println("Ошибка регистрации.")
             return false
         }
-        uniStorage.add(University(universityId, name, today))
-        println("Зарегистрирован университет: \nName: $name\nId: $userId\nAdress: $adress\nStructure: $structure")
+        uniStorage.add(University(universityId, name, adress, structure))
+        println("Зарегистрирован университет: \nName: $name\nId: $universityId\nAdress: $adress\nStructure: $structure")
         return true
     }
 
-    @Bean
     fun unregister(universityId: Int): Boolean {
         if (false) {
             println("Ошибка разрегистрации.")

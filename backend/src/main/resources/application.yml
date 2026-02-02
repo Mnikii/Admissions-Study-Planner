@@ -50,4 +50,5 @@ springdoc:
   api-docs:
     path: /v3/api-docs
 
-
+restricted_names:
+  lst: ["", "shit"]
