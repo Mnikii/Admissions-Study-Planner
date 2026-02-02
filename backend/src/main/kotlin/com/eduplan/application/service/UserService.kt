@@ -44,4 +44,27 @@ class UserService {
         println("Зарегестрирован пользователь: \nName: $name\nId: $userId\nRegistration date: $today")
         return true
     }
+    fun deleteAcc(userId: Int): Boolean{
+        val user = userStorage.get(userId)
+        if (user == null){
+            println("Пользователь с ID $userId не зарегистрирован")
+            return false
+        }
+        userStorage.delete(userId)
+        println("Аккаунт пользователся с ID $userId удалён")
+        return true
+    }
+    fun updateName(userId: Int, newName: String): Boolean {
+        val user = userStorage.get(userId)
+        if (user == null){
+            println("Пользователь с ID $userId не зарегистрирован")
+            return false
+        }
+        val oldName = user.name
+        user.name = newName
+        userStorage.update(user)
+        println("Имя пользователя обновлено с $oldName на $newName")
+        return true
+
+    }
 }
