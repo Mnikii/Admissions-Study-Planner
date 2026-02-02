@@ -6,18 +6,17 @@ import org.springframework.stereotype.Repository
 import org.springframework.stereotype.Service
 
 data class User(
-    val userId: Int,
-    var name: String,
-    val registration_date: String
-) {
-}
+    val id: Int,
+    val name: String,
+    val today: String
+)
 
 @Repository
 class UserRepository {
     private val users = mutableMapOf<Int, User>()
 
     fun add(user: User) {
-        users[user.userId] = user
+        users[user.id] = user
     }
 
     fun delete(userId: Int) {
@@ -25,7 +24,7 @@ class UserRepository {
     }
 
     fun update(new_user: User) {
-        users[new_user.userId] = new_user
+        users[new_user.id] = new_user
     }
 
     fun get(userId: Int): User? {
@@ -35,18 +34,16 @@ class UserRepository {
 
 
 @Service
-class UserService {
+class UserService(private val appProperties: AppProperties) {
     private val userStorage = UserRepository()
-
-    private var restrNames = AppProperties().restrictedNames
 
     @PostConstruct
     fun init() {
-        println("Загружен список запрещенных имен: $restrNames")
+        println("Загружен список запрещенных имен: ${appProperties.restrictedNames}")
     }
 
     fun register(userId: Int, name: String, today: String): Boolean {
-        if (name in restrNames) {
+        if (name in appProperties.restrictedNames) {
             println("Ошибка регистрации. Недопустимое имя пользователя: $name")
             return false
         }
