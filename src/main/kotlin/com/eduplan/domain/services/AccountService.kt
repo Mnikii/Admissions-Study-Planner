@@ -1,22 +1,29 @@
 package com.eduplan.domain.services
 
+import com.eduplan.domain.model.Properties
 import com.eduplan.domain.model.Student
 import com.eduplan.domain.model.StudentStatus
 import com.eduplan.domain.model.University
 import com.eduplan.domain.repositories.StudentRepository
 import com.eduplan.domain.repositories.UniversitiesRepository
 import jakarta.annotation.PostConstruct
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.stereotype.Component
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 import java.util.UUID
 
-@Service
-class AccountService {
 
+@Service
+class AccountService(
+    private val properties: Properties
+) {
+
+
+    private val restrictedNames = properties.restrictedNames
     private val studentStorage = StudentRepository()
     private val uniStorage = UniversitiesRepository()
     private val logger = LoggingService()
-    private val restrictedNames = emptyList<String>()
 
     @PostConstruct
     fun init() {
