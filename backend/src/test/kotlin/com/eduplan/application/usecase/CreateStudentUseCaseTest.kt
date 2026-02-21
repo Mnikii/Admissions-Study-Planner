@@ -1,8 +1,11 @@
 package com.eduplan.application.usecase
 
 import com.eduplan.application.dto.CreateStudentRequest
+import com.eduplan.application.service.LoggingService
+import com.eduplan.application.service.NotificationService
 import com.eduplan.domain.model.Student
 import com.eduplan.domain.model.StudentStatus
+import com.eduplan.infrastructure.persistence.repository.StudentRepository
 import io.mockk.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -44,9 +47,9 @@ class CreateStudentUseCaseTest {
             updatedAt = LocalDateTime.now()
         )
 
-        every { studentRepository.save(any()) } returns expectedStudent
-        every { notificationService.sendWelcomeEmail(any(), any()) } returns true
-        every { loggingService.info(any(), any()) } just Runs
+        every { studentRepository.save(Any()) } returns expectedStudent
+        every { notificationService.sendWelcomeEmail(Any(), any()) } returns true
+        every { loggingService.info(Any(), Any()) } just Runs
 
         // Act
         val result = useCase.execute(request)
