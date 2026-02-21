@@ -1,0 +1,10 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="EduplanApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+    <module name="eduplan.main" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="com.eduplan.EduplanApplicationKt" />
+    <option name="ACTIVE_PROFILES" value="" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
