@@ -1,9 +1,0 @@
-.idea
-.gradle
-build
-.git
-.gitignore
-HW
-*.md
-docker-compose.yml
-Dockerfile
