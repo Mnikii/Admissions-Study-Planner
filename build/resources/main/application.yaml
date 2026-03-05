@@ -1,9 +1,0 @@
-application:
-  name: eduplan
-  restrictedNames:
-    - "none"
-    - "null"
-
-logging:
-  level:
-    org.springframework.boot.context.properties: DEBUG
