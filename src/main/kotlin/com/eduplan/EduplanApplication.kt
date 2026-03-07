@@ -7,7 +7,7 @@ import org.springframework.boot.runApplication
 
 @SpringBootApplication
 @EnableConfigurationProperties(Properties::class)
-class EduplanApplication //
+class EduplanApplication
 
 fun main(args: Array<String>) {
 	runApplication<EduplanApplication>(*args)
