@@ -34,3 +34,4 @@ class UserMapper {
             status = domain.status
         )
 }
+

@@ -30,3 +30,4 @@ class UserRepositoryAdapter(
 
     override fun findByEmail(email: String): User? = jpaRepository.findByEmail(email)?.let { mapper.toDomain(it) }
 }
+
