@@ -1,7 +1,7 @@
 package com.eduplan.domain.services
 
 import com.eduplan.domain.model.Properties
-import com.eduplan.domain.model.Student
+import com.eduplan.domain.model.User
 import com.eduplan.domain.model.StudentStatus
 import com.eduplan.domain.model.University
 import com.eduplan.domain.repositories.StudentRepository
@@ -10,6 +10,7 @@ import jakarta.annotation.PostConstruct
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import org.springframework.stereotype.Service
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.UUID
 
@@ -31,12 +32,12 @@ class AccountService(
     }
 
 
-    fun uniRegister(universityId: UUID, name: String, address: String, structure: MutableMap<String, MutableList<String>>): Boolean {
+    fun uniRegister(universityId: UUID, name: String, address: String, country: String, website: String): Boolean {
         if (false) {
             logger.error("Unable to register an university: UUID = $universityId | name = $name", "ACCOUNT")
             return false
         }
-        uniStorage.add(University(universityId, name, address, structure))
+        uniStorage.add(University(universityId, name, address, country, website, LocalDateTime.now(), null))
         logger.info("Registered an university: UUID = $universityId | name = $name", "ACCOUNT")
         return true
     }
@@ -51,14 +52,15 @@ class AccountService(
         return true
     }
 
-    fun studentRegister(studentId: UUID, email: String, fullName: String, phoneNumber: String, today: LocalDateTime): Boolean {
-        if (fullName in restrictedNames) {
-            logger.error("Unable to register a student: UUID = $studentId | name = $fullName", "ACCOUNT")
+    fun studentRegister(username: String, email: String, firstName: String, lastName: String, phoneNumber: String, birthday: LocalDate): Boolean {
+        if (username in restrictedNames) {
+            logger.error("Unable to register a student: Username = $username | name = $firstName + $lastName", "ACCOUNT")
             return false
         }
-        logger.info("Registered a student: UUID = $studentId", "ACCOUNT")
-        studentStorage.add(Student(studentId, email, fullName, phoneNumber, StudentStatus.PENDING_VERIFICATION, today, today))
+        logger.info("Registered a student: Username = $username", "ACCOUNT")
+        studentStorage.add(User(username, email, firstName, lastName, phoneNumber, birthday, StudentStatus.PENDING_VERIFICATION, UUID.randomUUID()))
         return true
+
     }
 
     fun studentUnregister(studentId: UUID): Boolean {
