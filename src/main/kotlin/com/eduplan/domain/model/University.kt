@@ -10,7 +10,7 @@ data class University(
     val country: String,
     val website: String,
     var createdAt: LocalDateTime,
-    var deletedAt: LocalDateTime,
+    var deletedAt: LocalDateTime?,
     //val structure: MutableMap<String, MutableList<String>> // Key - faculty; Value - list of programmes on a faculty
 ) {
 }
