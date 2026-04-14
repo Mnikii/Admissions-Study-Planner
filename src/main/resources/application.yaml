@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: eduplan
+
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/eduplan}
+    username: ${DB_USERNAME:eduplan}
+    password: ${DB_PASSWORD:eduplan}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
