@@ -9,7 +9,7 @@ class UniversitiesRepository {
     private val unis = mutableMapOf<UUID, University>()
 
     fun add(uni: University) {
-        unis[uni.universityId] = uni
+        unis[uni.id] = uni
     }
 
     fun delete(universityId: UUID) {
@@ -17,7 +17,7 @@ class UniversitiesRepository {
     }
 
     fun update(newUni: University) {
-        unis[newUni.universityId] = newUni
+        unis[newUni.id] = newUni
     }
 
     fun get(universityId: UUID): University? {
