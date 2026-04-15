@@ -1,0 +1,35 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:17-alpine
+    container_name: eduplan-db
+    environment:
+      POSTGRES_DB: eduplan
+      POSTGRES_USER: eduplan
+      POSTGRES_PASSWORD: eduplan
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U eduplan"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build: .
+    container_name: eduplan-app
+    ports:
+      - "8080:8080"
+    environment:
+      DB_URL: jdbc:postgresql://db:5432/eduplan
+      DB_USERNAME: eduplan
+      DB_PASSWORD: eduplan
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  pgdata:
