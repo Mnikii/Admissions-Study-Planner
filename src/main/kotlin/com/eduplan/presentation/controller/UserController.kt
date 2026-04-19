@@ -1,7 +1,9 @@
 package com.eduplan.presentation.controller
 
 import com.eduplan.application.port.input.UserUseCase
-import com.eduplan.presentation.dto.UserDto
+import com.eduplan.presentation.dto.CreateUserRequestDto
+import com.eduplan.presentation.dto.UpdateUserRequestDto
+import com.eduplan.presentation.dto.UserResponseDto
 import com.eduplan.presentation.mapper.UserPresentationMapper
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
