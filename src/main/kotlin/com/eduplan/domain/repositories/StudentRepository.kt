@@ -1,6 +1,6 @@
 package com.eduplan.domain.repositories
 
-import com.eduplan.domain.model.Student
+import com.eduplan.domain.model.User
 import com.eduplan.domain.services.LoggingService
 import org.springframework.stereotype.Repository
 import java.util.UUID
@@ -8,13 +8,13 @@ import java.util.UUID
 @Repository
 class StudentRepository {
     private val logger = LoggingService()
-    private val students = mutableMapOf<UUID, Student>()
+    private val students = mutableMapOf<UUID, User>()
 
     init {
         logger.info("Student repository created")
     }
 
-    fun add(student: Student) {
+    fun add(student: User) {
         students[student.id] = student
     }
 
@@ -22,11 +22,11 @@ class StudentRepository {
         students.remove(studentId)
     }
 
-    fun update(newStudent: Student) {
+    fun update(newStudent: User) {
         students[newStudent.id] = newStudent
     }
 
-    fun get(studentId: UUID): Student? {
+    fun get(studentId: UUID): User? {
         return students[studentId]
     }
 }
