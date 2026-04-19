@@ -1,19 +1,17 @@
 package com.eduplan.application.service
 
 import com.eduplan.application.port.input.UniversityUseCase
-import com.eduplan.application.port.output.UniversityRepositoryPort
-import com.eduplan.domain.model.StudentStatus
 import com.eduplan.domain.model.University
+import com.eduplan.infrastructure.adapter.UniversityRepositoryAdapter
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
-import java.util.UUID
-import kotlin.String
+import java.util.*
 
 @Service
 @Transactional
 class UniversityService(
-    private val universityRepository: UniversityRepositoryPort,
+    private val universityRepository: UniversityRepositoryAdapter,
 ) : UniversityUseCase {
     override fun createUniversity(command: UniversityUseCase.CreateUniversityCommand): University {
         val newUniversity =
@@ -59,4 +57,6 @@ class UniversityService(
     }
 
     override fun getAllUniversities(): List<University> = universityRepository.findAll()
+
+    fun getByName(name: String) : University? = universityRepository.findByName(name)
 }
