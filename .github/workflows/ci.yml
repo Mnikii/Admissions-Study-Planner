@@ -33,3 +33,11 @@ jobs:
       - name: Run Unit Tests
         run: ./gradlew test
 
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v4
+        with:
+            name: build-result
+
+            path: build/libs/*.jar
+
+            retention-days: 7
