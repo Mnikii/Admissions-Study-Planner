@@ -30,7 +30,6 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew assemble
 
-
       - name: Run Unit Tests
         run: ./gradlew test
 
