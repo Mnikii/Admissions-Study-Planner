@@ -26,3 +26,10 @@ jobs:
       
       - name: Build project
         run: ./gradlew build
+
+      - name: Build with Gradle
+        run: ./gradlew assemble
+
+      - name: Run Unit Tests
+        run: ./gradlew test
+
