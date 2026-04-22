@@ -49,14 +49,14 @@ class UniversityService(
     override fun deleteUniversity(id: UUID) {
         val university = universityRepository.findById(id) ?: throw Exception("University with ID $id not found")
 
-        val softDeletedUniversity =
-            university.copy(
-                deletedAt = LocalDateTime.now(),
-            )
+        if (university.deletedAt != null) {
+            return
+        }
+        val softDeletedUniversity = university.copy(deletedAt = LocalDateTime.now())
         universityRepository.save(softDeletedUniversity)
     }
 
     override fun getAllUniversities(): List<University> = universityRepository.findAll()
 
-    fun getByName(name: String) : University? = universityRepository.findByName(name)
+    override fun getByName(name: String) : University? = universityRepository.findByName(name)
 }

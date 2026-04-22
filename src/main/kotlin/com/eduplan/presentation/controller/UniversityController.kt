@@ -38,6 +38,18 @@ class UniversityController(
         }
     }
 
+    @GetMapping("/{name}")
+    fun getUniversityByName(
+        @PathVariable name: String,
+    ): ResponseEntity<UniversityResponseDto> {
+        val university = universityUseCase.getByName(name)
+        return if (university != null) {
+            ResponseEntity.ok(mapper.toResponseDto(university))
+        } else {
+            ResponseEntity.notFound().build()
+        }
+    }
+
     @GetMapping
     fun getAllUniversities(): ResponseEntity<List<UniversityResponseDto>> {
         val universities = universityUseCase.getAllUniversities()
