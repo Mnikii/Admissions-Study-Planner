@@ -17,6 +17,8 @@ interface UniversityUseCase {
 
     fun getAllUniversities(): List<University>
 
+    fun getByName(name: String): University?
+
 
     data class CreateUniversityCommand(
         val name: String,
