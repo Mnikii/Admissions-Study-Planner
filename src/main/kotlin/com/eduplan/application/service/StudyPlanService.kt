@@ -21,15 +21,15 @@ class StudyPlanService(
         val incompleteTasks = studyPlanRepository.findByUserIdAndDeletedAtIsNull(userId)
         if(incompleteTasks.isEmpty()) return emptyList()
 
-        val calculatedDeadline = incompleteTasks.filter{ !it.isCompleted }.mapNotNull { it.deadline }.minOrNull() ?: return emptyList()
+        val calculatedDeadline = incompleteTasks.filter{ it.status != COMPLETED }.mapNotNull { it.deadline }.minOrNull() ?: return emptyList()
 
-        val NearestPlans = incompleteTasks.filter{!it.isCompleted && it.deadline == calculatedDeadline}
+        val NearestPlans = incompleteTasks.filter{it.status != COMPLETED && it.deadline == calculatedDeadline}
         return NearestPlans
     }
     fun calculatePlanProgress(userId: UUID): Double {
         val tasks = studyPlanRepository.findByUserIdAndDeletedAtIsNull(planId).orElseThrow { RuntimeException("Планы не найдены") }
         if (tasks.isEmpty()) return 0.0
-        val completed = tasks.count { it.isCompleted }
+        val completed = tasks.count { it.status == COMPLETED }
         return (completed.toDouble() / tasks.size) * 100.0
     }
     override fun create(
