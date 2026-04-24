@@ -17,6 +17,21 @@ class StudyPlanService(
     private val studyPlanRepository: StudyPlanOutputPort
 ) : StudyPlanInputPort {
 
+    private fun calculateNearestDeadline(userId: UUID): List<StudyPlan>? {
+        val incompleteTasks = studyPlanRepository.findByUserIdAndDeletedAtIsNull(userId)
+        if(incompleteTasks.isEmpty()) return emptyList()
+
+        val calculatedDeadline = incompleteTasks.filter{ !it.isCompleted }.mapNotNull { it.deadline }.minOrNull() ?: return emptyList()
+
+        val NearestPlans = incompleteTasks.filter{!it.isCompleted && it.deadline == calculatedDeadline}
+        return NearestPlans
+    }
+    fun calculatePlanProgress(userId: UUID): Double {
+        val tasks = studyPlanRepository.findByUserIdAndDeletedAtIsNull(planId).orElseThrow { RuntimeException("Планы не найдены") }
+        if (tasks.isEmpty()) return 0.0
+        val completed = tasks.count { it.isCompleted }
+        return (completed.toDouble() / tasks.size) * 100.0
+    }
     override fun create(
         userId: UUID,
         title: String,
@@ -59,6 +74,7 @@ class StudyPlanService(
         degreeLevel: String,
         fieldOfStudy: String,
         startDate: String?
+        deadline: String?
     ): StudyPlan {
         val plan = studyPlanRepository.findByIdAndUserIdAndDeletedAtIsNull(planId, userId)
             .orElseThrow { RuntimeException("План не найден") }
@@ -70,6 +86,7 @@ class StudyPlanService(
             fieldOfStudy = fieldOfStudy,
             startDate = startDate?.let { LocalDate.parse(it) },
             updatedAt = LocalDateTime.now()
+            deadline = deadline
         )
         return studyPlanRepository.save(updatedPlan)
     }

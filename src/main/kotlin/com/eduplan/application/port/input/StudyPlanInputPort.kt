@@ -23,6 +23,7 @@ interface StudyPlanInputPort {
         degreeLevel: String,
         fieldOfStudy: String,
         startDate: String?
+        deadline: String?
     ): StudyPlan
     fun delete(userId: UUID, planId: UUID)
 }
