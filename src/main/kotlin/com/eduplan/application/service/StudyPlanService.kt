@@ -17,7 +17,7 @@ class StudyPlanService(
     private val studyPlanRepository: StudyPlanOutputPort
 ) : StudyPlanInputPort {
 
-    private fun getPlansWithNearestDeadline(userId: UUID): List<StudyPlan>? {
+    private fun getPlansWithNearestDeadline(userId: UUID): List<StudyPlan> {
         val incompleteTasks = studyPlanRepository.findByUserIdAndDeletedAtIsNull(userId)
         if(incompleteTasks.isEmpty()) return emptyList()
 
@@ -74,7 +74,7 @@ class StudyPlanService(
         degreeLevel: String,
         fieldOfStudy: String,
         startDate: String?,
-        deadline: LocalDate?
+        deadline: String?
     ): StudyPlan {
         val plan = studyPlanRepository.findByIdAndUserIdAndDeletedAtIsNull(planId, userId)
             .orElseThrow { RuntimeException("План не найден") }
