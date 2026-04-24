@@ -74,7 +74,7 @@ class StudyPlanService(
         degreeLevel: String,
         fieldOfStudy: String,
         startDate: String?,
-        deadline: String?
+        deadline: LocalDate?
     ): StudyPlan {
         val plan = studyPlanRepository.findByIdAndUserIdAndDeletedAtIsNull(planId, userId)
             .orElseThrow { RuntimeException("План не найден") }
