@@ -17,19 +17,19 @@ class StudyPlanService(
     private val studyPlanRepository: StudyPlanOutputPort
 ) : StudyPlanInputPort {
 
-    private fun calculateNearestDeadline(userId: UUID): List<StudyPlan>? {
+    private fun getPlansWithNearestDeadline(userId: UUID): List<StudyPlan>? {
         val incompleteTasks = studyPlanRepository.findByUserIdAndDeletedAtIsNull(userId)
         if(incompleteTasks.isEmpty()) return emptyList()
 
-        val calculatedDeadline = incompleteTasks.filter{ it.status != COMPLETED }.mapNotNull { it.deadline }.minOrNull() ?: return emptyList()
+        val calculatedDeadline = incompleteTasks.filter{ it.status != PlanStatus.COMPLETED }.mapNotNull { it.deadline }.minOrNull() ?: return emptyList()
 
-        val NearestPlans = incompleteTasks.filter{it.status != COMPLETED && it.deadline == calculatedDeadline}
+        val NearestPlans = incompleteTasks.filter{it.status != PlanStatus.COMPLETED && it.deadline == calculatedDeadline}
         return NearestPlans
     }
     fun calculatePlanProgress(userId: UUID): Double {
-        val tasks = studyPlanRepository.findByUserIdAndDeletedAtIsNull(planId).orElseThrow { RuntimeException("Планы не найдены") }
+        val tasks = studyPlanRepository.findByUserIdAndDeletedAtIsNull(userId)
         if (tasks.isEmpty()) return 0.0
-        val completed = tasks.count { it.status == COMPLETED }
+        val completed = tasks.count { it.status == PlanStatus.COMPLETED }
         return (completed.toDouble() / tasks.size) * 100.0
     }
     override fun create(
