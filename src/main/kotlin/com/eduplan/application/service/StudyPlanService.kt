@@ -73,8 +73,8 @@ class StudyPlanService(
         targetCountry: String,
         degreeLevel: String,
         fieldOfStudy: String,
-        startDate: String?
-        deadline: String?
+        startDate: String?,
+        deadline: LocalDate?
     ): StudyPlan {
         val plan = studyPlanRepository.findByIdAndUserIdAndDeletedAtIsNull(planId, userId)
             .orElseThrow { RuntimeException("План не найден") }
@@ -85,7 +85,7 @@ class StudyPlanService(
             degreeLevel = DegreeLevel.valueOf(degreeLevel),
             fieldOfStudy = fieldOfStudy,
             startDate = startDate?.let { LocalDate.parse(it) },
-            updatedAt = LocalDateTime.now()
+            updatedAt = LocalDateTime.now(),
             deadline = deadline
         )
         return studyPlanRepository.save(updatedPlan)

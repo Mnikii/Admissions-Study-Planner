@@ -1,6 +1,7 @@
 package com.eduplan.application.port.input
 
 import com.eduplan.domain.model.StudyPlan
+import java.time.LocalDate
 import java.util.UUID
 
 interface StudyPlanInputPort {
@@ -22,8 +23,8 @@ interface StudyPlanInputPort {
         targetCountry: String,
         degreeLevel: String,
         fieldOfStudy: String,
-        startDate: String?
-        deadline: String?
+        startDate: String?,
+        deadline: LocalDate?
     ): StudyPlan
     fun delete(userId: UUID, planId: UUID)
 }
