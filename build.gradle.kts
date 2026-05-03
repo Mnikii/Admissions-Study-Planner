@@ -29,8 +29,10 @@ dependencies {
 	runtimeOnly("org.postgresql:postgresql")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
-  testImplementation("io.mockk:mockk:1.14.9")
+	testImplementation("io.mockk:mockk:1.14.9")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+	implementation("net.logstash.logback:logstash-logback-encoder:7.4")
+	runtimeOnly("com.h2database:h2")
 }
 
 kotlin {
