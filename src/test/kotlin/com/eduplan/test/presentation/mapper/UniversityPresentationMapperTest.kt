@@ -4,12 +4,13 @@ import com.eduplan.domain.model.University
 import com.eduplan.presentation.dto.CreateUniversityRequestDto
 import com.eduplan.presentation.dto.UpdateUniversityRequestDto
 import com.eduplan.presentation.mapper.UniversityPresentationMapper
+import com.eduplan.test.infrastucture.IntegrationTestBase
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 import java.util.*
 
-class UniversityPresentationMapperTest {
+class UniversityPresentationMapperTest : IntegrationTestBase() {
     private val mapper = UniversityPresentationMapper()
 
     @Test
