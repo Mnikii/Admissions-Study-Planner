@@ -1,12 +1,13 @@
 package com.eduplan.domain.model
 
 import com.eduplan.domain.model.University
+import com.eduplan.test.infrastucture.IntegrationTestBase
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 import java.util.*
 
-class UniversityTest {
+class UniversityTest : IntegrationTestBase(){
 
     @Test
     fun `should create university with all required parameters`() {

@@ -4,6 +4,7 @@ import com.eduplan.application.port.input.UniversityUseCase
 import com.eduplan.application.service.UniversityService
 import com.eduplan.domain.model.University
 import com.eduplan.infrastructure.adapter.UniversityRepositoryAdapter
+import com.eduplan.test.infrastucture.IntegrationTestBase
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -14,7 +15,7 @@ import org.junit.jupiter.api.assertThrows
 import java.time.LocalDateTime
 import java.util.*
 
-class UniversityServiceTest {
+class UniversityServiceTest : IntegrationTestBase() {
     private lateinit var universityRepository: UniversityRepositoryAdapter
     private lateinit var universityService: UniversityService
 

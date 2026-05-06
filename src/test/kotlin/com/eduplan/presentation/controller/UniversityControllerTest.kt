@@ -6,6 +6,7 @@ import com.eduplan.presentation.controller.UniversityController
 import com.eduplan.presentation.dto.CreateUniversityRequestDto
 import com.eduplan.presentation.dto.UpdateUniversityRequestDto
 import com.eduplan.presentation.mapper.UniversityPresentationMapper
+import com.eduplan.test.infrastucture.IntegrationTestBase
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -16,7 +17,7 @@ import org.springframework.http.HttpStatus
 import java.time.LocalDateTime
 import java.util.*
 
-class UniversityControllerTest {
+class UniversityControllerTest : IntegrationTestBase() {
     private lateinit var universityUseCase: UniversityUseCase
     private lateinit var mapper: UniversityPresentationMapper
     private lateinit var controller: UniversityController
