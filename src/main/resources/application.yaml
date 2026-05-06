@@ -26,3 +26,11 @@ management:
       probes:
         enabled: true
 
+logging:
+  level:
+    com.eduplan: DEBUG
+    org.springframework.web: INFO
+    org.springframework.security: INFO
+
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - [%X{correlationId}] [%X{userId}] - %msg%n"
