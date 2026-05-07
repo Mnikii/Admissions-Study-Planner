@@ -11,7 +11,7 @@ class StudentRepository {
     private val students = mutableMapOf<UUID, User>()
 
     init {
-        logger.info("Student repository created")
+        logger.info("User repository created")
     }
 
     fun add(student: User) {
@@ -22,8 +22,8 @@ class StudentRepository {
         students.remove(studentId)
     }
 
-    fun update(newStudent: User) {
-        students[newStudent.id] = newStudent
+    fun update(newUser: User) {
+        students[newUser.id] = newUser
     }
 
     fun get(studentId: UUID): User? {

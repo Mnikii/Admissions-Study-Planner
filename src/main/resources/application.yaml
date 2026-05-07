@@ -19,11 +19,20 @@ spring:
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.sql
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+  endpoint:
+    health:
+      probes:
+        enabled: true
 
 application:
   security:
     jwt:
-      secret-key: eEWH1hVWy1pvEQD6Hx06Gzl9Odh6cZexFZzPfoLSHE8ARqBYNAiYLz7r7F1WEBHmE2EscRCy+sguVIdJEMpeTg==
+      secret-key: ${JWT_SECRET_KEY:eEWH1hVWy1pvEQD6Hx06Gzl9Odh6cZexFZzPfoLSHE8ARqBYNAiYLz7r7F1WEBHmE2EscRCy+sguVIdJEMpeTg==}
       expiration: 86400000
       refresh-token:
         expiration: 604800000
