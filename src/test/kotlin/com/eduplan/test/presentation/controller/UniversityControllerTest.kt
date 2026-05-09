@@ -6,7 +6,7 @@ import com.eduplan.presentation.controller.UniversityController
 import com.eduplan.presentation.dto.CreateUniversityRequestDto
 import com.eduplan.presentation.dto.UpdateUniversityRequestDto
 import com.eduplan.presentation.mapper.UniversityPresentationMapper
-import com.eduplan.test.infrastucture.IntegrationTestBase
+import com.eduplan.test.infrastructure.IntegrationTestBase
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify

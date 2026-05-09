@@ -4,7 +4,7 @@ import com.eduplan.application.port.input.UniversityUseCase
 import com.eduplan.application.service.UniversityService
 import com.eduplan.domain.model.University
 import com.eduplan.infrastructure.adapter.UniversityRepositoryAdapter
-import com.eduplan.test.infrastucture.IntegrationTestBase
+import com.eduplan.test.infrastructure.IntegrationTestBase
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
