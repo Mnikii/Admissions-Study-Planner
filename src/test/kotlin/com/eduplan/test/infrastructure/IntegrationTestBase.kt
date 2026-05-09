@@ -1,4 +1,4 @@
-package com.eduplan.test.infrastucture
+package com.eduplan.test.infrastructure
 
 import org.springframework.boot.jdbc.test.autoconfigure.AutoConfigureTestDatabase
 import org.springframework.boot.test.context.SpringBootTest

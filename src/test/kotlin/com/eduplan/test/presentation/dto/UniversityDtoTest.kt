@@ -1,6 +1,6 @@
 package com.eduplan.presentation.dto
 
-import com.eduplan.test.infrastucture.IntegrationTestBase
+import com.eduplan.test.infrastructure.IntegrationTestBase
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime

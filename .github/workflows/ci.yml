@@ -1,43 +1,70 @@
-name: CI
+name: CI/CD Pipeline
 
 on:
   push:
     branches: [ main ]
   pull_request:
     branches: [ main ]
-
 jobs:
-  build:
+  build-and-test:
     runs-on: ubuntu-latest
-    
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: test
+          POSTGRES_DB: testdb
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U test -d testdb"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
-      - name: Setup JDK 17
+
+      - name: Setup JDK 21
         uses: actions/setup-java@v4
         with:
           java-version: '21'
           distribution: 'temurin'
           cache: 'gradle'
-      
+
       - name: Grant permission for gradlew
         run: chmod +x gradlew
-      
-      - name: Build project
-        run: ./gradlew build
 
-      - name: Build with Gradle
-        run: ./gradlew assemble
+      - name: Run Lint
+        run: ./gradlew check
 
-      - name: Run Unit Tests
-        run: ./gradlew test
+      - name: Build and Test
+        env:
+          SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/testdb
+          SPRING_DATASOURCE_USERNAME: test
+          SPRING_DATASOURCE_PASSWORD: test
+        run: ./gradlew build test
 
-      - name: Upload Build Artifact
+      - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-            name: build-result
+          name: build-result
+          path: build/libs/*.jar
 
-            path: build/libs/*.jar
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build-and-test
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
 
-            retention-days: 7
+    steps:
+      - name: Deploy via Webhook
+        env:
+          WEBHOOK_URL_BACKEND: ${{ secrets.WEBHOOK_URL_BACKEND }}
+          WEBHOOK_SECRET_TOKEN: ${{ secrets.WEBHOOK_SECRET_TOKEN }}
+        run: |
+          curl -sf -X POST \
+            -H "Content-Type: application/json" \
+            -H "Authorization: Bearer ${WEBHOOK_SECRET_TOKEN}" \
+            "${WEBHOOK_URL_BACKEND}"
+          echo "Deployment webhook triggered successfully."
