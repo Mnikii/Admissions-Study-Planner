@@ -1,4 +1,4 @@
-package com.eduplan.test.presentation.mapper
+package com.eduplan.presentation.mapper
 
 import com.eduplan.domain.model.University
 import com.eduplan.presentation.dto.CreateUniversityRequestDto

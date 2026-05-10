@@ -1,4 +1,4 @@
-package com.eduplan.test.application.service
+package com.eduplan.application.service
 
 import com.eduplan.application.port.input.UniversityUseCase
 import com.eduplan.application.service.UniversityService
