@@ -36,6 +36,7 @@ dependencies {
 	testImplementation("org.testcontainers:postgresql:1.20.4")
 	testImplementation("org.postgresql:postgresql")
 	testRuntimeOnly("com.h2database:h2:2.2.224")
+	testImplementation("org.testcontainers:jdbc:1.20.4")
 }
 
 kotlin {

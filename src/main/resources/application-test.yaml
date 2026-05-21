@@ -1,7 +1,6 @@
 spring:
   datasource:
-    url: jdbc:tc:postgresql:17://localhost/test_db
-    driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
+    url: ${SPRING_DATASOURCE_URL:jdbc:tc:postgresql:17://localhost/test_db}
 
   jpa:
     hibernate:
