@@ -1,4 +1,4 @@
-package com.eduplan.test.presentation.controller
+package com.eduplan.presentation.controller
 
 import com.eduplan.application.port.input.UniversityUseCase
 import com.eduplan.domain.model.University

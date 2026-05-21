@@ -1,4 +1,4 @@
-package com.eduplan.test.domain.model
+package com.eduplan.domain.model
 
 import com.eduplan.domain.model.University
 import com.eduplan.test.infrastructure.IntegrationTestBase
