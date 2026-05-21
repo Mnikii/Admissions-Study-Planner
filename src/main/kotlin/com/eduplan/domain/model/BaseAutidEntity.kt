@@ -6,9 +6,9 @@ open class BaseAuditEntity(
     open val createdAt: LocalDateTime = LocalDateTime.now(),
     open var deletedAt: LocalDateTime? = null,
 ) {
-    fun isActive(): Boolean = deletedAt == null
+    open fun isActive(): Boolean = deletedAt == null
 
-    fun softDelete() {
+    open fun softDelete() {
         deletedAt = LocalDateTime.now()
     }
 
