@@ -39,5 +39,8 @@ class GlobalExceptionHandler {
     @ExceptionHandler(Exception::class)
     fun handleOther(ex: Exception): ResponseEntity<Map<String, String>> =
         ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(mapOf("error" to "Unexpected error"))
-}
 
+    @ExceptionHandler(PlanTaskNotFoundException::class)
+    fun handlePlanTaskNotFound(ex: PlanTaskNotFoundException): ResponseEntity<Map<String, String>> =
+        ResponseEntity.status(HttpStatus.NOT_FOUND).body(mapOf("error" to ex.message.orEmpty()))
+}
