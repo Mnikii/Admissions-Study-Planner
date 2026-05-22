@@ -16,9 +16,6 @@ spring:
       hibernate:
         format_sql: true
 
-  flyway:
-    baseline-on-migrate: true
-
 management:
   endpoints:
     web:
@@ -28,3 +25,4 @@ management:
     health:
       probes:
         enabled: true
+
