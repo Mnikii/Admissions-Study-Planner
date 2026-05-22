@@ -18,12 +18,14 @@ import java.util.UUID
 
 class StudyPlanApplicationServiceTest {
     private lateinit var outputPort: FakeStudyPlanOutputPort
+    private lateinit var taskOutputPort: FakePlanTaskOutputPort
     private lateinit var service: StudyPlanApplicationService
 
     @BeforeEach
     fun setUp() {
         outputPort = FakeStudyPlanOutputPort()
-        service = StudyPlanApplicationService(outputPort, StudyPlanDomainService())
+        taskOutputPort = FakePlanTaskOutputPort()
+        service = StudyPlanApplicationService(outputPort, StudyPlanDomainService(), taskOutputPort)
     }
 
     @Test
@@ -97,6 +99,7 @@ class StudyPlanApplicationServiceTest {
     @Test
     fun `update should prevent completion when tasks incomplete`() {
         val plan = outputPort.storePlan(userId = UUID.randomUUID())
+        taskOutputPort.storeTask(plan.id, status = com.eduplan.domain.model.TaskStatus.PENDING)
 
         assertThrows<IllegalStateException> {
             service.update(
@@ -113,6 +116,19 @@ class StudyPlanApplicationServiceTest {
                 ),
             )
         }
+    }
+
+    @Test
+    fun `recalculateDeadline should use earliest incomplete task deadline`() {
+        val plan = outputPort.storePlan(userId = UUID.randomUUID())
+        taskOutputPort.storeTask(plan.id, status = com.eduplan.domain.model.TaskStatus.PENDING, deadline = LocalDate.of(2026, 3, 1))
+        taskOutputPort.storeTask(plan.id, status = com.eduplan.domain.model.TaskStatus.COMPLETED, deadline = LocalDate.of(2026, 1, 1))
+        taskOutputPort.storeTask(plan.id, status = com.eduplan.domain.model.TaskStatus.IN_PROGRESS, deadline = LocalDate.of(2026, 2, 1))
+
+        service.recalculateDeadline(plan.id)
+
+        val saved = outputPort.findAnyById(plan.id)
+        assertThat(saved?.deadline).isEqualTo(LocalDate.of(2026, 2, 1))
     }
 
     @Test
@@ -175,5 +191,56 @@ class StudyPlanApplicationServiceTest {
             storage.values.filter { it.userId == userId }
 
         fun findAnyById(id: UUID): StudyPlan? = storage[id]
+    }
+
+    private class FakePlanTaskOutputPort : com.eduplan.application.port.output.PlanTaskOutputPort {
+        private val storage = linkedMapOf<UUID, com.eduplan.domain.model.PlanTask>()
+
+        fun storeTask(
+            planId: UUID,
+            status: com.eduplan.domain.model.TaskStatus,
+            deadline: LocalDate? = null,
+        ): com.eduplan.domain.model.PlanTask {
+            val task =
+                com.eduplan.domain.model.PlanTask(
+                    id = UUID.randomUUID(),
+                    planId = planId,
+                    title = "Task",
+                    description = null,
+                    taskType = com.eduplan.domain.model.TaskType.OTHER,
+                    status = status,
+                    priority = com.eduplan.domain.model.TaskPriority.MEDIUM,
+                    deadline = deadline,
+                    completedAt = null,
+                    universityId = null,
+                    programId = null,
+                    orderIndex = 0,
+                    createdAt = LocalDateTime.now(),
+                    updatedAt = LocalDateTime.now(),
+                    deletedAt = null,
+                )
+            storage[task.id] = task
+            return task
+        }
+
+        override fun save(task: com.eduplan.domain.model.PlanTask): com.eduplan.domain.model.PlanTask {
+            storage[task.id] = task
+            return task
+        }
+
+        override fun findById(id: UUID): com.eduplan.domain.model.PlanTask? = storage[id]?.takeIf { it.deletedAt == null }
+
+        override fun findAllByPlanId(planId: UUID): List<com.eduplan.domain.model.PlanTask> =
+            storage.values.filter { it.planId == planId && it.deletedAt == null }
+
+        override fun softDeleteById(id: UUID) {
+            storage[id]?.let { storage[id] = it.copy(deletedAt = LocalDateTime.now()) }
+        }
+
+        override fun softDeleteByPlanId(planId: UUID) {
+            storage.values
+                .filter { it.planId == planId }
+                .forEach { task -> storage[task.id] = task.copy(deletedAt = LocalDateTime.now()) }
+        }
     }
 }
