@@ -27,7 +27,7 @@ class StudyPlanPresentationMapper {
             progress = StudyPlanProgressDto(
                 totalTasks = progress.totalTasks,
                 completedTasks = progress.completedTasks,
-                percent = progress.percent,
+                completionPercentage = progress.completionPercentage,
             ),
             tasks = tasks.map {
                 StudyPlanTaskDto(

@@ -33,7 +33,7 @@ class StudyPlanController(
                 fieldOfStudy = request.fieldOfStudy,
                 startDate = request.startDate,
             )
-        val response = mapper.toResponse(plan, StudyPlanProgress(0, 0, 0), emptyList())
+        val response = mapper.toResponse(plan, StudyPlanProgress(0, 0, 0.0), emptyList())
         return ResponseEntity(response, HttpStatus.CREATED)
     }
 
@@ -48,7 +48,11 @@ class StudyPlanController(
         val plans = studyPlanUseCase.getAllForUser(userId, status)
         val sorted = applySort(plans, sort)
         val paged = applyPagination(sorted, page, size)
-        val response = paged.map { mapper.toResponse(it, StudyPlanProgress(0, 0, 0), emptyList()) }
+        val response =
+            paged.map { plan ->
+                val progress = studyPlanUseCase.getWithProgress(plan.id, userId).progress
+                mapper.toResponse(plan, progress, emptyList())
+            }
         return ResponseEntity.ok(response)
     }
 

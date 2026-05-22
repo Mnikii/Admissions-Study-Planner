@@ -39,7 +39,7 @@ data class StudyPlanUpdateRequest(
 data class StudyPlanProgressDto(
     val totalTasks: Int,
     val completedTasks: Int,
-    val percent: Int,
+    val completionPercentage: Double,
 )
 
 data class StudyPlanTaskDto(
