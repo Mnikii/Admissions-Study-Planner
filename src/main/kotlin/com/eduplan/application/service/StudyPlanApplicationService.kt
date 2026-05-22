@@ -19,6 +19,7 @@ import java.util.UUID
 class StudyPlanApplicationService(
     private val studyPlanOutputPort: StudyPlanOutputPort,
     private val domainService: StudyPlanDomainService,
+    private val planTaskOutputPort: com.eduplan.application.port.output.PlanTaskOutputPort,
 ) : StudyPlanUseCase {
     private val logger = LoggerFactory.getLogger(StudyPlanApplicationService::class.java)
 
@@ -83,7 +84,8 @@ class StudyPlanApplicationService(
                 updatedAt = LocalDateTime.now(),
             )
 
-        validateCompletion(updatedPlan, emptyList())
+        val tasks = planTaskOutputPort.findAllByPlanId(planId)
+        validateCompletion(updatedPlan, tasks.map { toSummary(it) })
         val saved = studyPlanOutputPort.save(updatedPlan)
         logger.info("Study plan updated: planId={}, userId={}", saved.id, saved.userId)
         return saved
@@ -97,12 +99,15 @@ class StudyPlanApplicationService(
         val archived = plan.copy()
         archived.softDelete()
         studyPlanOutputPort.save(archived)
+        planTaskOutputPort.softDeleteByPlanId(planId)
         logger.info("Study plan archived: planId={}, userId={}", planId, userId)
     }
 
     override fun recalculateDeadline(planId: UUID) {
         val plan = studyPlanOutputPort.findById(planId) ?: throw StudyPlanNotFoundException(planId)
-        val recalculatedDeadline = domainService.calculateDeadline(plan, emptyList())
+        val tasks = planTaskOutputPort.findAllByPlanId(planId)
+        val pendingDeadlines = tasks.filter { it.status != com.eduplan.domain.model.TaskStatus.COMPLETED }.map { it.deadline }
+        val recalculatedDeadline = domainService.calculateDeadline(plan, pendingDeadlines)
         val updated = plan.copy(deadline = recalculatedDeadline, updatedAt = LocalDateTime.now())
         studyPlanOutputPort.save(updated)
         logger.info("Study plan deadline recalculated: planId={}", planId)
@@ -110,11 +115,14 @@ class StudyPlanApplicationService(
 
     override fun getWithProgress(planId: UUID, userId: UUID): StudyPlanUseCase.StudyPlanWithProgress {
         val plan = getOwnedPlan(planId, userId)
-        val progress = domainService.calculateProgress(totalTasks = 0, completedTasks = 0)
+        val tasks = planTaskOutputPort.findAllByPlanId(planId)
+        val completed = tasks.count { it.status == com.eduplan.domain.model.TaskStatus.COMPLETED }
+        val progress = domainService.calculateProgress(totalTasks = tasks.size, completedTasks = completed)
+        val summaries = tasks.map { toSummary(it) }
         return StudyPlanUseCase.StudyPlanWithProgress(
             plan = plan,
             progress = progress,
-            tasks = emptyList(),
+            tasks = summaries,
         )
     }
 
@@ -137,4 +145,12 @@ class StudyPlanApplicationService(
             throw IllegalStateException("Cannot complete plan with incomplete tasks")
         }
     }
+
+    private fun toSummary(task: com.eduplan.domain.model.PlanTask): StudyPlanUseCase.StudyPlanTaskSummary =
+        StudyPlanUseCase.StudyPlanTaskSummary(
+            id = task.id,
+            title = task.title,
+            status = task.status.name,
+            deadline = task.deadline,
+        )
 }
