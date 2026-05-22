@@ -30,7 +30,7 @@ class StudyPlanPresentationMapperTest {
                 updatedAt = LocalDateTime.of(2026, 1, 2, 0, 0),
                 deletedAt = null,
             )
-        val progress = StudyPlanProgress(totalTasks = 3, completedTasks = 1, percent = 33)
+        val progress = StudyPlanProgress(totalTasks = 3, completedTasks = 1, completionPercentage = 33.33)
         val tasks =
             listOf(
                 StudyPlanUseCase.StudyPlanTaskSummary(

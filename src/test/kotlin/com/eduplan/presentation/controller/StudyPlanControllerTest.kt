@@ -70,7 +70,7 @@ class StudyPlanControllerTest {
 
     @Test
     fun `getById should return plan with progress`() {
-        val result = StudyPlanUseCase.StudyPlanWithProgress(plan, StudyPlanProgress(0, 0, 0), emptyList())
+        val result = StudyPlanUseCase.StudyPlanWithProgress(plan, StudyPlanProgress(0, 0, 0.0), emptyList())
         every { useCase.getWithProgress(plan.id, userId) } returns result
 
         val response = controller.getById(userId, plan.id)
@@ -83,7 +83,7 @@ class StudyPlanControllerTest {
     fun `update should return updated plan`() {
         val request = StudyPlanUpdateRequest(title = "Updated")
         val updated = plan.copy(title = "Updated")
-        val result = StudyPlanUseCase.StudyPlanWithProgress(updated, StudyPlanProgress(0, 0, 0), emptyList())
+        val result = StudyPlanUseCase.StudyPlanWithProgress(updated, StudyPlanProgress(0, 0, 0.0), emptyList())
         every { useCase.update(plan.id, userId, any()) } returns updated
         every { useCase.getWithProgress(plan.id, userId) } returns result
 
