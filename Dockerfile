@@ -13,12 +13,13 @@ RUN set -e; for i in 1 2 3; do ./gradlew --no-daemon --no-parallel dependencies 
 
 COPY src src
 
-RUN ./gradlew --no-daemon bootJar \
-      -x test \
-      -x detekt \
-      -x ktlintCheck \
-      -x ktlintKotlinScriptCheck \
-      -x ktlintMainSourceSetCheck
+RUN ./gradlew --no-daemon bootJar
+# \
+#       -x test \
+#       -x detekt \
+#       -x ktlintCheck \
+#       -x ktlintKotlinScriptCheck \
+#       -x ktlintMainSourceSetCheck
 
 # Stage 2: Runtime
 FROM eclipse-temurin:21-jre-alpine

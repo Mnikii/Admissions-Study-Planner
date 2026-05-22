@@ -1,0 +1,1 @@
+SELECT * FROM users WHERE username = 'vasvasya' AND deleted_at IS NULL;
