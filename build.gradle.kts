@@ -3,6 +3,7 @@ plugins {
 	kotlin("plugin.spring") version "2.2.21"
 	id("org.springframework.boot") version "4.0.3"
 	id("io.spring.dependency-management") version "1.1.7"
+    kotlin("plugin.jpa") version "2.2.21"
 }
 
 group = "com.eduplan"
@@ -26,6 +27,9 @@ dependencies {
 	implementation("io.micrometer:micrometer-registry-prometheus")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.springframework.boot:spring-boot-starter-web")
+	implementation("org.springframework.boot:spring-boot-starter-validation")
+	implementation("org.flywaydb:flyway-core")
+	implementation("software.amazon.awssdk:s3:2.20.52")
 	runtimeOnly("org.postgresql:postgresql")
 	testImplementation("org.springframework.boot:spring-boot-starter-data-jpa-test")
 	testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
