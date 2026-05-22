@@ -28,11 +28,3 @@ management:
     health:
       probes:
         enabled: true
-
-application:
-  name: eduplan
-  restricted-names:
-    - admin
-    - root
-    - system
-

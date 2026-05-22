@@ -2,18 +2,23 @@
 .gradle/
 build/
 !gradle/wrapper/gradle-wrapper.jar
+
 # IDE
 .idea/
 *.iml
 *.iws
 *.ipr
 out/
+
 # OS
 .DS_Store
 Thumbs.db
+
 # Kotlin
 *.class
+
 # Logs
 *.log
+
 # Environment
 .env
