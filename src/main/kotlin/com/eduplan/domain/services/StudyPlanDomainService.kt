@@ -12,7 +12,7 @@ import java.time.LocalDate
 @Service
 class StudyPlanDomainService {
     fun calculateDeadline(plan: StudyPlan, taskDeadlines: List<LocalDate?>): LocalDate? =
-        taskDeadlines.filterNotNull().maxOrNull() ?: plan.deadline
+        taskDeadlines.filterNotNull().minOrNull() ?: plan.deadline
 
     fun calculateProgress(tasks: List<PlanTask>): StudyPlanProgress {
         val activeTasks = tasks.filter { it.deletedAt == null }

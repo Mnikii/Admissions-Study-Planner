@@ -10,22 +10,21 @@ import com.eduplan.domain.model.StudentStatus
 @Table(name = "users")
 data class UserJpaEntity(
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    val id: UUID,
+    val id: UUID = UUID.randomUUID(),
     @Column(name = "username", nullable = false, unique = true)
-    val username: String,
+    val username: String = "",
     @Column(nullable = false, unique = true)
-    val email: String,
+    val email: String = "",
     @Column(nullable = false)
-    val firstName: String,
+    val firstName: String = "",
     @Column(nullable = false)
-    val lastName: String,
+    val lastName: String = "",
     @Column(nullable = false)
-    val phoneNumber: String,
+    val phoneNumber: String = "",
     @Column(nullable = false)
-    val birthday: LocalDate,
+    val birthday: LocalDate = LocalDate.of(1970, 1, 1),
     @Column(nullable = false)
-    var status: StudentStatus,
+    var status: StudentStatus = StudentStatus.PENDING_VERIFICATION,
     @Column(nullable = false)
     override var createdAt: LocalDateTime = LocalDateTime.now(),
     @Column

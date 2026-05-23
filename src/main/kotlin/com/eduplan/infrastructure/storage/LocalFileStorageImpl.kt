@@ -1,6 +1,7 @@
 package com.eduplan.infrastructure.storage
 
 import com.eduplan.application.port.output.FileStoragePort
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.core.io.FileSystemResource
 import org.springframework.core.io.Resource
 import org.springframework.stereotype.Component
@@ -10,6 +11,7 @@ import java.nio.file.Path
 import java.nio.file.StandardCopyOption
 
 @Component
+@ConditionalOnProperty(prefix = "app.storage", name = ["type"], havingValue = "local", matchIfMissing = true)
 class LocalFileStorageImpl : FileStoragePort {
     private val base = Path.of("uploads")
 

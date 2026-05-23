@@ -7,7 +7,6 @@ import com.eduplan.presentation.dto.UserResponseDto
 import com.eduplan.presentation.mapper.UserPresentationMapper
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 import java.util.*
 
@@ -28,7 +27,6 @@ class UserController(
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("@accessControlService.canAccessUser(#id, authentication)")
     fun getUserById(
         @PathVariable id: UUID,
     ): ResponseEntity<UserResponseDto> {
@@ -41,7 +39,6 @@ class UserController(
     }
 
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN')")
     fun getAllUsers(): ResponseEntity<List<UserResponseDto>> {
         val users = userUseCase.getAllUsers()
         val response = users.map { mapper.toResponseDto(it) }
@@ -49,7 +46,6 @@ class UserController(
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("@accessControlService.canAccessUser(#id, authentication)")
     fun updateUser(
         @PathVariable id: UUID,
         @RequestBody request: UpdateUserRequestDto,
@@ -64,7 +60,6 @@ class UserController(
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("@accessControlService.canAccessUser(#id, authentication)")
     fun deleteUser(
         @PathVariable id: UUID,
     ): ResponseEntity<Void> =

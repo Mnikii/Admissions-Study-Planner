@@ -1,6 +1,7 @@
 package com.eduplan.infrastructure.storage
 
 import com.eduplan.application.port.output.FileStoragePort
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.core.io.ByteArrayResource
 import org.springframework.core.io.Resource
 import org.springframework.stereotype.Component
@@ -9,6 +10,7 @@ import java.io.InputStream
 import java.util.concurrent.ConcurrentHashMap
 
 @Component
+@ConditionalOnProperty(prefix = "app.storage", name = ["type"], havingValue = "mock")
 class MockFileStorageImpl : FileStoragePort {
     private val store = ConcurrentHashMap<String, ByteArray>()
 

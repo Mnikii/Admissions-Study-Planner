@@ -22,15 +22,14 @@ import java.util.UUID
 )
 data class AuthUserJpaEntity(
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    val id: UUID,
+    val id: UUID = UUID.randomUUID(),
     @Column(name = "user_id", nullable = false, unique = true)
-    val userId: UUID,
+    val userId: UUID = UUID.randomUUID(),
     @Column(nullable = false, unique = true)
-    val username: String,
+    val username: String = "",
     @Column(name = "password_hash", nullable = false)
-    val passwordHash: String?,
+    val passwordHash: String? = null,
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    val role: UserRole,
+    val role: UserRole = UserRole.USER,
 )

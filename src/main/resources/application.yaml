@@ -10,14 +10,11 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: update
     show-sql: true
     properties:
       hibernate:
         format_sql: true
-
-  liquibase:
-    change-log: classpath:db/changelog/db.changelog-master.sql
 
 management:
   endpoints:
@@ -28,3 +25,17 @@ management:
     health:
       probes:
         enabled: true
+
+app:
+  storage:
+    type: local
+
+application:
+  security:
+    password:
+      strength: 8
+    jwt:
+      secret-key: ${JWT_SECRET_KEY:Zm9yLWRldmVsb3BtZW50LW9ubHktc2VjcmV0LWtleS0zMmJ5dGVzLW1pbmltdW0=}
+      expiration: ${JWT_EXPIRATION:86400000}
+      refresh-token:
+        expiration: ${JWT_REFRESH_EXPIRATION:604800000}

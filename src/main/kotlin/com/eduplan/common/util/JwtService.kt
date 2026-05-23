@@ -1,47 +1,69 @@
 package com.eduplan.common.util
 
-import io.jsonwebtoken.Claims
-import io.jsonwebtoken.Jwts
-import io.jsonwebtoken.SignatureAlgorithm
-import io.jsonwebtoken.io.Decoders
-import io.jsonwebtoken.security.Keys
+import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Service
-import java.security.Key
+import java.nio.charset.StandardCharsets
+import java.security.MessageDigest
+import java.util.Base64
 import java.util.*
+import javax.crypto.Mac
+import javax.crypto.spec.SecretKeySpec
 
 @Service
 class JwtService(
-    @Value("\${application.security.jwt.secret-key}")
+    @Value("\${application.security.jwt.secret-key:Zm9yLWRldmVsb3BtZW50LW9ubHktc2VjcmV0LWtleS0zMmJ5dGVzLW1pbmltdW0=}")
     private val secretKey: String,
-    @Value("\${application.security.jwt.expiration}")
+    @Value("\${application.security.jwt.expiration:86400000}")
     private val jwtExpiration: Long,
-    @Value("\${application.security.jwt.refresh-token.expiration}")
+    @Value("\${application.security.jwt.refresh-token.expiration:604800000}")
     private val refreshExpiration: Long,
 ) {
-    private fun getSigningKey(): Key {
-        val keyBytes = Decoders.BASE64.decode(secretKey)
-        return Keys.hmacShaKeyFor(keyBytes)
+    private val mapper = ObjectMapper()
+
+    private fun keyBytes(): ByteArray =
+        try {
+            Base64.getDecoder().decode(secretKey)
+        } catch (_: Exception) {
+            secretKey.toByteArray(StandardCharsets.UTF_8)
+        }
+
+    private fun base64UrlEncode(bytes: ByteArray): String =
+        Base64.getUrlEncoder().withoutPadding().encodeToString(bytes)
+
+    private fun base64UrlDecode(value: String): ByteArray =
+        Base64.getUrlDecoder().decode(value)
+
+    private fun sign(input: String): ByteArray {
+        val mac = Mac.getInstance("HmacSHA256")
+        mac.init(SecretKeySpec(keyBytes(), "HmacSHA256"))
+        return mac.doFinal(input.toByteArray(StandardCharsets.UTF_8))
     }
 
-    fun extractUsername(token: String): String = extractClaim(token, Claims::getSubject)
+    private fun parsePayload(token: String): Map<String, Any> {
+        val parts = token.split('.')
+        require(parts.size == 3) { "Malformed token" }
+
+        val signingInput = "${parts[0]}.${parts[1]}"
+        val expected = sign(signingInput)
+        val actual = base64UrlDecode(parts[2])
+        require(MessageDigest.isEqual(expected, actual)) { "Invalid token signature" }
+
+        val payloadJson = String(base64UrlDecode(parts[1]), StandardCharsets.UTF_8)
+        @Suppress("UNCHECKED_CAST")
+        return mapper.readValue(payloadJson, Map::class.java) as Map<String, Any>
+    }
+
+    fun extractUsername(token: String): String = parsePayload(token)["sub"].toString()
 
     fun <T> extractClaim(
         token: String,
-        claimsResolver: (Claims) -> T,
+        claimsResolver: (Map<String, Any>) -> T,
     ): T {
-        val claims = extractAllClaims(token)
+        val claims = parsePayload(token)
         return claimsResolver(claims)
     }
-
-    private fun extractAllClaims(token: String): Claims =
-        Jwts
-            .parser()
-            .setSigningKey(getSigningKey())
-            .build()
-            .parseClaimsJws(token)
-            .body
 
     fun generateToken(userDetails: UserDetails): String = generateToken(mapOf(), userDetails)
 
@@ -56,15 +78,24 @@ class JwtService(
         extraClaims: Map<String, Any>,
         userDetails: UserDetails,
         expiration: Long,
-    ): String =
-        Jwts
-            .builder()
-            .setClaims(extraClaims)
-            .setSubject(userDetails.username)
-            .setIssuedAt(Date(System.currentTimeMillis()))
-            .setExpiration(Date(System.currentTimeMillis() + expiration))
-            .signWith(getSigningKey(), SignatureAlgorithm.HS256)
-            .compact()
+    ): String {
+        val now = System.currentTimeMillis()
+        val payload =
+            LinkedHashMap<String, Any>().apply {
+                putAll(extraClaims)
+                put("sub", userDetails.username)
+                put("iat", now / 1000)
+                put("exp", (now + expiration) / 1000)
+            }
+
+        val headerJson = mapper.writeValueAsString(mapOf("alg" to "HS256", "typ" to "JWT"))
+        val payloadJson = mapper.writeValueAsString(payload)
+        val headerPart = base64UrlEncode(headerJson.toByteArray(StandardCharsets.UTF_8))
+        val payloadPart = base64UrlEncode(payloadJson.toByteArray(StandardCharsets.UTF_8))
+        val signingInput = "$headerPart.$payloadPart"
+        val signature = base64UrlEncode(sign(signingInput))
+        return "$signingInput.$signature"
+    }
 
     fun isTokenValid(
         token: String,
@@ -76,7 +107,11 @@ class JwtService(
 
     private fun isTokenExpired(token: String): Boolean = extractExpiration(token).before(Date())
 
-    private fun extractExpiration(token: String): Date = extractClaim(token, Claims::getExpiration)
+    private fun extractExpiration(token: String): Date {
+        val payload = parsePayload(token)
+        val expSeconds = (payload["exp"] as Number).toLong()
+        return Date(expSeconds * 1000)
+    }
 
     fun extractExpirationDate(token: String): Date = extractExpiration(token)
 }

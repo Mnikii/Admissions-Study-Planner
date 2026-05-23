@@ -9,15 +9,15 @@ import java.util.UUID
 data class UniversityJpaEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    val id: UUID,
+    val id: UUID = UUID.randomUUID(),
     @Column(name = "name", nullable = false, unique = true)
-    val name: String,
+    val name: String = "",
     @Column(name = "address", nullable = false)
-    val address: String,
+    val address: String = "",
     @Column(name = "country", nullable = false)
-    val country: String,
+    val country: String = "",
     @Column(name = "website", nullable = false)
-    val website: String,
+    val website: String = "",
     @Column(nullable = false)
     override var createdAt: LocalDateTime = LocalDateTime.now(),
     @Column
